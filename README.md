@@ -6,7 +6,7 @@
 !wget https://raw.githubusercontent.com/sasasakaz/utility/main/data_checks/data_inspection.py
 import data_inspection
 numeric_scanner.scan_numeric_columns(df, ['target_col'])
-
+```
 
 ## 2. 🔍 データ変換ツール (convert)
 'doc_odt_to_txt`: .docまたは.odtファイルをテキストファイルに変換します。
@@ -14,3 +14,4 @@ numeric_scanner.scan_numeric_columns(df, ['target_col'])
 変換したいファイルが格納されているディレクトリに移動してから、
 ```python
 python doc_odt_to_txt.py
+```
