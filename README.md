@@ -9,7 +9,7 @@ numeric_scanner.scan_numeric_columns(df, ['target_col'])
 ```
 
 ## 2. 🔍 データ変換ツール (convert)
-'doc_odt_to_txt`: .docまたは.odtファイルをテキストファイルに変換します。
+'doc_odt_to_txt`:  .docまたは.odtファイルをテキストファイルに変換します。
 ### 使い方
 変換したいファイルが格納されているディレクトリに移動してから、
 ```python
