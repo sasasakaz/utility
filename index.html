@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Sasasa Utility</title>
-        <base target="_blank">
+    <base target="_blank">
     <style>
         body {
             font-family: sans-serif;
-            max-width: 600px;
+            max-width: 900px;
+            /* 少し幅を広げて段組しやすくする */
             margin: 40px auto;
             padding: 20px;
             background: #f9f9f9;
@@ -17,61 +18,83 @@
         h1 {
             border-bottom: 2px solid #333;
             padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* ここが段組のポイント！ */
+        .grid-container {
+            display: grid;
+            /* 画面幅に合わせて、最小280pxのカードを自動で並べる */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            /* カード同士の隙間 */
         }
 
         .tool-link {
-            display: block;
-            padding: 15px;
-            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             text-decoration: none;
             color: #333;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #eee;
         }
 
         .tool-link:hover {
-            transform: translateY(-2px);
-            border-left: 5px solid #007bff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+
+        .tool-link strong {
+            font-size: 1.1em;
+            color: #007bff;
         }
 
         .description {
             font-size: 0.85em;
             color: #666;
-            margin-top: 5px;
+            margin-top: 10px;
+            line-height: 1.5;
         }
     </style>
 </head>
 
 <body>
     <h1>🛠 Utility Tools</h1>
-
-    <a href="pages/markdown_converter.html" class="tool-link">
-        <strong>🦊 Markdown Converter</strong>
-        <div class="description">MarkdownをHTMLに変換する。</div>
-    </a>
-
-    <a href="pages/diff_viewer.html" class="tool-link">
-        <strong>🐯 Diff Viewer</strong>
-        <div class="description">テキストの差分を左右で視覚的に比較。</div>
-    </a>
-
-    <a href="pages/amazon_url_shortener.html" class="tool-link">
-        <strong>🦄 Amazon URL Shortener</strong>
-        <div class="description">Amazonの長いURLを不要箇所削って短くする。</div>
-    </a>
-
-    <a href="pages/qr_contact_url_generator.html" class="tool-link">
-        <strong>🐹 QR Contact URL Generator</strong>
-        <div class="description">メアドやSNSアカウントなど連絡先QRコードを生成する。</div>
-    </a>
-
-    <a href="pages/url_to_qr_code.html" class="tool-link">
-        <strong>🐼 URL to QR</strong>
-        <div class="description">URLをQRコード化して共有しやすくする。</div>
-    </a>
-
+    <div class="grid-container">
+        <a href="pages/beat_5g.html" class="tool-link">
+            <strong>🦊 Easy Bayesian Estimation for 5groups</strong>
+            <div class="description">5群の比率の差のベイズ推定を簡単実行。</div>
+        </a>
+        <a href="pages/beat_2g.html" class="tool-link">
+            <strong>🦁 Easy Bayesian Estimation for 2groups</strong>
+            <div class="description">2群の比率の差のベイズ推定を簡単実行。</div>
+        </a>
+        <a href="pages/markdown_converter.html" class="tool-link">
+            <strong>🐶 Markdown Converter</strong>
+            <div class="description">MarkdownをHTMLに変換する。</div>
+        </a>
+        <a href="pages/diff_viewer.html" class="tool-link">
+            <strong>🐯 Diff Viewer</strong>
+            <div class="description">テキストの差分を左右で視覚的に比較。</div>
+        </a>
+        <a href="pages/amazon_url_shortener.html" class="tool-link">
+            <strong>🦄 Amazon URL Shortener</strong>
+            <div class="description">Amazonの長いURLを不要箇所削って短くする。</div>
+        </a>
+        <a href="pages/qr_contact_url_generator.html" class="tool-link">
+            <strong>🐹 QR Contact URL Generator</strong>
+            <div class="description">メアドやSNSアカウントなど連絡先QRコードを生成する。</div>
+        </a>
+        <a href="pages/url_to_qr_code.html" class="tool-link">
+            <strong>🐼 URL to QR</strong>
+            <div class="description">URLをQRコード化して共有しやすくする。</div>
+        </a>
+    </div>
 </body>
 
 </html>
