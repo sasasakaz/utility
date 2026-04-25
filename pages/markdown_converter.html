@@ -5,15 +5,17 @@ MarkdownをHTMLに変換するツール
 Created: 2026-04-25
 Description: MarkdownをHTMLにリアルタイム変換する。HTMLソースをコピぺして使う。
 Note: ペースト先のhtmlにhighlight.jsの追記と、cssの追加が必要。
+-->
 
------------------------------------------------
-
+<!-- 
+/* syntax highlighter start */
 <link href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css' rel='stylesheet'/>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
 <script>hljs.highlightAll();</script>
+/* syntax highlighter end */
+-->
 
------------------------------------------------
-    
+<!--     
 /* 追加css: インラインコード */
 .post-body :not(pre) > code {
 background-color: #f0f0f0;
@@ -53,7 +55,6 @@ padding: 15px;
 margin: 10px 0;
 border-radius: 4px;
 }
------------------------------------------------ 
 -->
 
 <head>
