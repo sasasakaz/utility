@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!-- 
+QR Contact & URL Generator
+Created: 2026-02-11
+Description: QRコード生成ツールにゃん。
+Note: 
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Contact & URL Generator</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; background-color: #f4f7f8; color: #333; }
+    .container { max-width: 450px; margin: 0 auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h2 { font-size: 1.6rem; color: #007aff; margin: 0; letter-spacing: -0.03em; font-weight: 800; }
+    .header p { font-size: 0.75rem; color: #8e8e93; margin-top: -2px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+    .field-group { margin-bottom: 15px; }
+    .field-row { display: flex; gap: 10px; margin-bottom: 15px; }
+    .field-row .field-group { flex: 1; margin-bottom: 0; }
+    label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: #666; }
+    input { display: block; padding: 12px; width: 100%; box-sizing: border-box; border: 2px solid #eee; border-radius: 10px; font-size: 16px; }
+    input:focus { outline: none; border-color: #007aff; background-color: #f9fcff; }
+    .btn-generate { width: 100%; padding: 16px; margin-top: 10px; background-color: #007aff; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+    #qrcode-area { margin-top: 30px; display: none; flex-direction: column; align-items: center; border-top: 1px solid #eee; padding-top: 20px; }
+    .btn-download { margin-top: 15px; padding: 12px 24px; background-color: #5856d6; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
+    .security-note { margin-top: 15px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #34c759; font-size: 0.75rem; color: #555; line-height: 1.4; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2>QRコード生成にゃん</h2>
+    <p>Contact & URL Generator</p>
+  </div>
+
+  <div class="field-row">
+    <div class="field-group"><label>苗字 Last Name</label><input id="lastName" placeholder="田中"></div>
+    <div class="field-group"><label>名前 First Name</label><input id="firstName" placeholder="太郎"></div>
+  </div>
+
+  <div class="field-row">
+    <div class="field-group"><label>苗字（カナ）Last Kana</label><input id="lastNameKana" placeholder="タナカ"></div>
+    <div class="field-group"><label>名前（カナ）First Kana</label><input id="firstNameKana" placeholder="タロウ"></div>
+  </div>
+
+
+  <div class="field-group"><label>Email</label><input id="email1" type="email" placeholder="mail@example.com"></div>
+  <div class="field-group"><label>Phone Number</label><input id="tel" type="tel" placeholder="09012345678"></div>
+
+
+  <div class="field-row">
+    <div class="field-group" style="flex: 0.4;"><label>郵便番号</label><input id="zip" placeholder="123-4567"></div>
+    <div class="field-group"><label>都道府県</label><input id="pref" placeholder="東京都"></div>
+  </div>
+  <div class="field-group"><label>住所（市区町村・番地）</label><input id="addr" placeholder="世田谷区..."></div>
+
+  <div class="field-group">
+    <label style="color: #007aff;">Website / SNS（URL）</label>
+    <input id="webUrl" placeholder="https://example.com">
+  </div>
+
+  <button type="button" class="btn-generate" onclick="generate()">QRコードを生成するにゃ!</button>
+
+  <div class="security-note">
+    💡 名前を入れると<strong>連絡先登録用</strong>に、URLだけなら<strong>サイト表示用</strong>になるにゃ!
+  </div>
+
+  <div class="security-note">
+    🛡️ <strong>Privacy First</strong> ブラウザのみでQRコード生成するから安心にゃ!
+  </div>
+
+  <div id="qrcode-area">
+    <div id="qrcode"></div>
+    <button id="downloadBtn" class="btn-download">画像を保存する</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/ushelp/EasyQRCodeJS@master/dist/easy.qrcode.min.js"></script>
+
+<script>
+function generate() {
+  const getValue = (id) => document.getElementById(id).value.trim();
+  
+  const ln = getValue("lastName");
+  const fn = getValue("firstName");
+  const lnk = getValue("lastNameKana");
+  const fnk = getValue("firstNameKana");
+  const email = getValue("email1");
+  const tel = getValue("tel");
+  const zip = getValue("zip");
+  const pref = getValue("pref");
+  const addr = getValue("addr");
+  const webUrl = getValue("webUrl");
+
+  let qrText = "";
+
+  // 判定ロジック：名前があればvCard、なければURL単体だにゃ!
+  if (ln || fn) {
+    let vcard = "BEGIN:VCARD\r\nVERSION:3.0\r\n";
+    vcard += "N;CHARSET=UTF-8:" + ln + ";" + fn + ";;;\r\n";
+    vcard += "FN;CHARSET=UTF-8:" + ln + " " + fn + "\r\n";
+    if (lnk) vcard += "X-PHONETIC-LAST-NAME;CHARSET=UTF-8:" + lnk + "\r\n";
+    if (fnk) vcard += "X-PHONETIC-FIRST-NAME;CHARSET=UTF-8:" + fnk + "\r\n";
+
+    if (email) vcard += "EMAIL;TYPE=INTERNET,HOME:" + email + "\r\n";
+    if (tel) vcard += "TEL:" + tel + "\r\n";
+    if (zip || pref || addr) {
+      vcard += "ADR;TYPE=HOME;CHARSET=UTF-8:;;" + addr + ";;" + pref + ";" + zip + ";Japan\r\n";
+    }
+//     if (webUrl) vcard += "URL;TYPE=WORK:" + webUrl + "\r\n";
+    if (webUrl) vcard += "URL:" + webUrl + "\r\n";
+    vcard += "END:VCARD";
+    qrText = vcard;
+  } else if (webUrl) {
+    // URLだけで飛ばすにゃ!
+    qrText = webUrl;
+  } else {
+    alert("名前かURL、どちらかは入力してほしいにゃん!");
+    return;
+  }
+
+  const qrDiv = document.getElementById("qrcode");
+  const qrArea = document.getElementById("qrcode-area");
+  qrDiv.innerHTML = "";
+
+  // 1. まずはQRコードを描く（この時点ではまだCanvas）
+  new QRCode(qrDiv, {
+    text: qrText,
+    width: 250,
+    height: 250,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // 2. ほんの少しだけ待って、Canvasを本物の「画像」に変換するにゃ！
+  setTimeout(() => {
+    const canvas = qrDiv.querySelector("canvas");
+    if (canvas) {
+      const dataUrl = canvas.toDataURL("image/png");
+      const img = document.createElement("img");
+      img.src = dataUrl;
+      img.style.width = "250px";
+      img.style.height = "250px";
+      
+      // 中身を画像(img)に入れ替えることで、長押し保存ができるようになるにゃ！
+      qrDiv.innerHTML = "";
+      qrDiv.appendChild(img);
+    }
+    // QRエリアを表示するにゃ
+    qrArea.style.display = "flex";
+  }, 100); 
+
+document.getElementById("downloadBtn").onclick = function() {
+    // canvasを探すんじゃなくて、imgを探すように変えるにゃ！
+    const img = qrDiv.querySelector("img");
+    if (img) {
+      const link = document.createElement('a');
+      link.href = img.src; // imgのデータ（DataURL）をそのまま使うにゃ
+      
+      const fileName = (ln || fn) ? (ln + "_" + fn) : "qrcode";
+      link.download = fileName + ".png";
+      
+      document.body.appendChild(link); // 一瞬だけ画面に追加して
+      link.click();
+      document.body.removeChild(link); // すぐ消すにゃ
+    } else {
+      // 万が一まだ画像ができてなかったとき用だにゃ
+      alert("画像がまだ準備できてないみたいだにゃ。少し待ってみてね！");
+    }
+  };
+}
+</script>
+</body>
+</html>
