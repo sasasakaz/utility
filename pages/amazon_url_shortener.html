@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<!-- 
+Amazon URL Shortener
+Created: 2025-10-05
+Description: Amazonの長いURLからASINを抽出してシンプルな商品ページURLに変換するにゃん。
+Note: 
+-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amazon URL Shortener</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Hiragino Kaku Gothic ProN',Meiryo,Arial;margin:18px;background:#fafafa;color:#222}
+    .card{background:#fff;border-radius:8px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,0.06);max-width:640px;margin:0 auto}
+
+    input,select,button{font-size:14px;padding:8px;border-radius:6px;border:1px solid #ddd;width:100%;box-sizing:border-box}
+    label{font-weight:600;margin-top:8px;display:block}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+
+    .muted{color:#666;font-size:13px}
+    .out{background:#f6f8fa;padding:8px;border-radius:6px;margin-top:8px;word-break:break-all}
+
+    .btn{cursor:pointer;background:#007bff;color:#fff;border:none;transition:background 0.2s;width:100%}
+    .btn:hover{background:#0069d9}
+
+    .small{font-size:13px;padding:6px}
+
+    .actions{display:flex;gap:8px;margin-top:8px}
+    #copyMsg{margin-top:6px;color:green;font-size:13px;display:none}
+
+    .url-row{display:flex;gap:8px;align-items:center;width:100%}
+    .url-row input{flex:1;min-width:0}
+    .clear-btn{
+      flex:0 0 38px;
+      height:38px;
+      padding:0;
+      border-radius:6px;
+      background:#eee;
+      color:#555;
+      border:1px solid #ddd;
+      cursor:pointer;
+      font-size:16px;
+      line-height:1;
+    }
+    .clear-btn:hover{background:#ddd}
+
+    #history{margin-top:16px;font-size:13px}
+    #history ul{list-style:none;padding-left:0;margin:0}
+    #history li{padding:4px 0;border-bottom:1px solid #eee;word-break:break-all}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Amazon URL Shortener</h2>
+    <p class="muted">Extracts the ASIN from Amazon's long URL and converts it into a simple product page URL.</p>
+    <p class="muted">Amazonの長いURLからASINを抽出してシンプルな商品ページURLに変換するにゃん。</p>
+
+    <label for="url">Long URL</label>
+    <div class="url-row">
+      <input id="url" />
+      <button class="clear-btn" id="clearUrl" title="clear">✕</button>
+    </div>
+
+    <div class="row" style="margin-top:8px">
+      <div>
+        <label for="domain">domain</label>
+        <select id="domain">
+          <option value="co.jp">amazon.co.jp</option>
+          <option value="com">amazon.com</option>
+          <option value="co.uk">amazon.co.uk</option>
+          <option value="de">amazon.de</option>
+          <option value="fr">amazon.fr</option>
+          <option value="it">amazon.it</option>
+          <option value="ca">amazon.ca</option>
+        </select>
+      </div>
+      <div>
+        <label for="style">URL style</label>
+        <select id="style">
+          <option value="dp">/dp/ASIN</option>
+          <option value="gp">/gp/product/ASIN</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="shorten" class="btn">Shorten</button>
+    </div>
+
+    <div id="resultArea">
+      <label>Short URL</label>
+      <div id="cleanOut" class="out"> — </div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <button id="copyClean" class="btn small">Copy</button>
+        <span id="copyMsg">Copied!</span>
+      </div>
+    </div>
+
+    <div id="history" class="muted">
+      <strong>History</strong>
+      <ul id="historyList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const patterns = [
+      /\/dp\/([A-Z0-9]{10})(?:[/?]|$)/i,
+      /\/gp\/product\/([A-Z0-9]{10})(?:[/?]|$)/i,
+      /\/product\/([A-Z0-9]{10})(?:[/?]|$)/i,
+      /\/gp\/aw\/d\/([A-Z0-9]{10})(?:[/?]|$)/i,
+      /\/exec\/obidos\/ASIN\/([A-Z0-9]{10})(?:[/?]|$)/i,
+      /[?&]asin=([A-Z0-9]{10})(?:[&]|$)/i,
+    ];
+
+    const urlEl = document.getElementById('url');
+    const domainEl = document.getElementById('domain');
+    const styleEl = document.getElementById('style');
+    const cleanOut = document.getElementById('cleanOut');
+    const copyMsg = document.getElementById('copyMsg');
+    const historyList = document.getElementById('historyList');
+
+    document.getElementById('clearUrl').addEventListener('click', ()=>{
+      urlEl.value = '';
+      urlEl.focus();
+    });
+
+    function extractASIN(url){
+      try{
+        const u = decodeURIComponent(url);
+        for(const p of patterns){
+          const m = u.match(p);
+          if(m) return m[1].toUpperCase();
+        }
+        const fallback = u.match(/([A-Z0-9]{10})(?:[/?]|$)/i);
+        if(fallback) return fallback[1].toUpperCase();
+      }catch(e){ console.warn('extractASIN error', e); }
+      return null;
+    }
+
+    function buildCleanUrl(domain, style, asin){
+      if(!asin) return '';
+      const host = 'www.amazon.' + domain;
+      return style === 'dp' ? `https://${host}/dp/${asin}` : `https://${host}/gp/product/${asin}`;
+    }
+
+    function addHistory(url){
+      const li = document.createElement('li');
+      li.textContent = url;
+      historyList.prepend(li);
+    }
+
+    document.getElementById('shorten').addEventListener('click', ()=>{
+      const raw = urlEl.value.trim();
+      if(!raw){ alert('Enter the URL.'); return; }
+      const asin = extractASIN(raw);
+      if(!asin){ cleanOut.textContent = 'The ASIN was not found. Please check the URL.'; return; }
+      const url = buildCleanUrl(domainEl.value, styleEl.value, asin);
+      cleanOut.textContent = url;
+      addHistory(url);
+    });
+
+    document.getElementById('copyClean').addEventListener('click', async ()=>{
+      const txt = cleanOut.textContent;
+      if(!txt || txt === '—') return;
+      await navigator.clipboard.writeText(txt);
+      copyMsg.style.display = 'inline';
+      setTimeout(()=>{ copyMsg.style.display = 'none'; },2000);
+    });
+  </script>
+</body>
+</html>
