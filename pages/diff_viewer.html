@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!-- 
+Diff Viewer (jsDelivr版)
+Created: 2026-03-11
+Description: 左右比較ビューア。
+Note: 
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>Diff Viewer (jsDelivr版)</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css">
+    
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px; background-color: #f6f8fa; }
+        .input-area { display: flex; gap: 10px; margin-bottom: 15px; }
+        textarea { flex: 1; height: 180px; padding: 12px; border: 1px solid #d0d7de; border-radius: 6px; font-family: monospace; font-size: 14px; }
+        .btn-container { text-align: center; margin-bottom: 20px; }
+        button { 
+            padding: 10px 30px; cursor: pointer; background: #2ea44f; color: white; 
+            border: none; border-radius: 6px; font-weight: bold; font-size: 16px;
+        }
+        button:hover { background: #2c974b; }
+        #output { background: white; border: 1px solid #d0d7de; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+    <h2>左右比較ビューアにゃん</h2>
+    <div class="input-area">
+        <textarea id="old" placeholder="比較元（古い方）"></textarea>
+        <textarea id="new" placeholder="比較先（新しい方）"></textarea>
+    </div>
+    <div class="btn-container">
+        <button onclick="compare()">比較実行にゃん！</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/diff@5.1.0/dist/diff.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/js/diff2html.min.js"></script>
+
+    <script>
+        function compare() {
+            const oldVal = document.getElementById('old').value;
+            const newVal = document.getElementById('new').value;
+            const out = document.getElementById('output');
+
+            try {
+                // 1. 差分データを生成 (jsdiffの関数名に注意)
+                // ライブラリによっては Diff.createTwoFilesPatch だったり 
+                // グローバルな JsDiff を使う場合があるので、安定した呼び出し方にしています
+                const patch = Diff.createTwoFilesPatch("Before", "After", oldVal, newVal);
+
+                // 2. Diff2HtmlでHTMLを生成
+                const html = Diff2Html.html(patch, {
+                    inputFormat: 'diff',
+                    showFiles: false,
+                    matching: 'lines',
+                    outputFormat: 'side-by-side' // 左右表示
+                });
+
+                // 3. 画面に表示
+                out.innerHTML = html;
+            } catch (e) {
+                console.error(e);
+                alert("実行中にエラーが発生したよ。コンソールを確認してみてにゃん！");
+            }
+        }
+    </script>
+</body>
+</html>
