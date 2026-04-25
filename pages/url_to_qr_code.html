@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!-- 
+URL to QR code
+Created: 2026-03-09
+Description: URLをQRコードに変換するツールにゃん。
+Note: 
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL to QR code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
+        .container { background: white; padding: 20px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #qrcode { margin: 20px 0; display: flex; justify-content: center; }
+        #qrcode img { border: 1px solid #eee; padding: 10px; }
+        input { padding: 12px; width: 280px; font-size: 16px; border: 1px solid #ddd; border-radius: 6px; }
+        .btn { display: block; margin: 20px auto 0; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>QRコード作成にゃん</h2>
+        <input type="text" id="url-input" placeholder="URLを貼り付けてにゃん" oninput="generateQR()">
+        
+        <div id="qrcode"></div>
+        
+        <a id="download-btn" class="btn" style="display: none;">PNG画像として保存する</a>
+    </div>
+
+    <script>
+        const qrcodeDiv = document.getElementById("qrcode");
+        const downloadBtn = document.getElementById("download-btn");
+        
+        const qr = new QRCode(qrcodeDiv, {
+            width: 256,
+            height: 256,
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        function generateQR() {
+            const url = document.getElementById("url-input").value;
+            if (url) {
+                qr.makeCode(url);
+                
+                // 少しだけ待ってから画像URLをボタンにセット（生成完了を待つ）
+                setTimeout(() => {
+                    const img = qrcodeDiv.querySelector("img");
+                    if (img && img.src) {
+                        downloadBtn.href = img.src;
+                        downloadBtn.download = "qrcode.png"; // ここでファイル名を指定
+                        downloadBtn.style.display = "block";
+                    }
+                }, 100);
+            } else {
+                downloadBtn.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
