@@ -177,6 +177,7 @@ border-radius: 4px;
         <button class="btn-tag btn-html" onclick="insertTag('info')" title="HTML形式で挿入">✅ 情報</button>
         <button class="btn-tag btn-html" onclick="insertTag('warn')" title="HTML形式で挿入">⚠️ 注意</button>
         <button class="btn-tag btn-html" onclick="insertTag('alert')" title="HTML形式で挿入">🚫 危険</button>
+        <button class="btn-tag btn-html" onclick="insertTag('br_hr')" title="HTML形式で挿入">➖ 改行&区切り線</button>
     </div>
 
     <div class="container">
@@ -264,7 +265,6 @@ border-radius: 4px;
                 case 'code':
                     insertText = '\n```\n' + (selectedText || 'code here') + '\n```\n';
                     break;
-
                 case 'mark':
                     insertText = '<mark>' + (selectedText || 'ハイライト') + '</mark>';
                     break;
@@ -277,7 +277,10 @@ border-radius: 4px;
                 case 'alert':
                     insertText = '<div class="mdc-alert-box">\n<strong>🚫 危険！</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n';
                     break;
-                // case 'code':
+                case 'br_hr':
+                    insertText = '\n<br>\n<hr>\n';
+                    break;
+                    // case 'code':
                 //     insertText = '<pre><code>\n' + (selectedText || 'code here') + '\n</code></pre>\n';
                 //     break;
             }
