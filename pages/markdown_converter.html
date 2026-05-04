@@ -3,58 +3,9 @@
 <!-- 
 MarkdownをHTMLに変換するツール
 Created: 2026-04-25
-Description: MarkdownをHTMLにリアルタイム変換する。HTMLソースをコピぺして使う。
-Note: ペースト先のhtmlにhighlight.jsの追記と、cssの追加が必要。
--->
-
-<!-- 
-/* syntax highlighter start */
-<link href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css' rel='stylesheet'/>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
-<script>hljs.highlightAll();</script>
-/* syntax highlighter end */
--->
-
-<!--     
-/* 追加css: インラインコード */
-.post-body :not(pre) > code {
-background-color: #f0f0f0;
-color: #c7254e;
-padding: 2px 4px;
-border-radius: 4px;
-font-family: monospace;
-font-size: 90%;
-}
-/* 追加css: 引用 */
-.post-body blockquote {
-border-left: 5px solid #ccc;
-margin: 1.5em 20px;
-padding: 10px 20px;
-color: #666;
-background-color: #f9f9f9;
-}
-/* 追加css: 装飾ボックス */
-.mdc-info-box {
-background-color: #e8f5e9;
-border-left: 5px solid #4caf50;
-padding: 15px;
-margin: 10px 0;
-border-radius: 4px;
-}
-.mdc-warn-box {
-background-color: #fff3e0;
-border-left: 5px solid #ff9800;
-padding: 15px;
-margin: 10px 0;
-border-radius: 4px;
-}
-.mdc-alert-box {
-background-color: #ffebee;
-border-left: 5px solid #f44336;
-padding: 15px;
-margin: 10px 0;
-border-radius: 4px;
-}
+Updated: 2026-05-04
+Description: MarkdownをHTMLに変換する。HTMLソースをコピぺして使う。
+Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自由に編集可能。hilight.js利用時はペースト先のHTMLにhighlight.jsとCSSの追加が必要。
 -->
 
 <head>
@@ -62,7 +13,6 @@ border-radius: 4px;
     <title>Markdown to HTML</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* このツール自体のレイアウト用CSS */
         body {
             font-family: sans-serif;
             margin: 20px;
@@ -70,25 +20,85 @@ border-radius: 4px;
             color: #333;
         }
 
-        .container {
-            display: flex;
-            gap: 20px;
-            height: 75vh;
+        h2 {
+            margin-top: 0;
         }
 
+        /* メインの左右配置 */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            /* 上揃え */
+        }
+
+        .editor-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* テキストエリア共通 */
         textarea,
         .output {
-            flex: 1;
+            width: 100%;
             padding: 15px;
             border: 1px solid #ccc;
             border-radius: 8px;
             background: white;
-            overflow-y: auto;
-            white-space: pre-wrap;
+            box-sizing: border-box;
             font-family: monospace;
             font-size: 14px;
+            overflow-y: auto;
         }
 
+        /* 入力と出力の高さを固定 */
+        #markdown-input,
+        #html-output {
+            height: 70vh;
+        }
+
+        #html-output {
+            white-space: pre-wrap;
+        }
+
+        /* 下部コントロール（ボタン類） */
+        .bottom-controls {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 左側の設定エリア */
+        .settings-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /* 設定エリア同士の間隔 */
+            margin-top: 10px;
+        }
+
+        /* 設定エリア（左下） */
+        .settings-area {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .settings-area label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .settings-area textarea {
+            height: 100px;
+            background: #fafafa;
+        }
+
+        /* 共通ボタン・タグ */
         .controls {
             margin-bottom: 10px;
             display: flex;
@@ -96,21 +106,12 @@ border-radius: 4px;
             flex-wrap: wrap;
         }
 
-        .btn-group {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
         .copy-msg {
             color: #4caf50;
             font-weight: bold;
-            margin-left: 10px;
-            align-self: center;
-            display: inline-block;  /* 文字が入っていない時に余計なスペースを取らないように */
+            font-size: 14px;
             min-width: 120px;
         }
-
 
         button {
             padding: 8px 15px;
@@ -142,7 +143,6 @@ border-radius: 4px;
 
         .btn-tag:hover {
             background: #f8f8f8;
-            border-color: #bbb;
         }
 
         .btn-copy {
@@ -168,7 +168,7 @@ border-radius: 4px;
     <div class="controls">
         <button class="btn-tag btn-md" onclick="insertTag('strong')" title="Markdown形式で挿入">🅱️ 強調</button>
         <button class="btn-tag btn-md" onclick="insertTag('link')" title="Markdown形式で挿入">🔗 リンク</button>
-        <button class="btn-tag btn-md" onclick="insertTag('quote')" title="Markdown形式で挿入">❝ 引用 ❞</button>
+        <button class="btn-tag btn-md" onclick="insertTag('quote')" title="Markdown形式で挿入">❝ 引用</button>
         <button class="btn-tag btn-md" onclick="insertTag('table')" title="Markdown形式で挿入">📊 表</button>
         <button class="btn-tag btn-md" onclick="insertTag('inline_code')" title="Markdown形式で挿入">🏷️ インラインコード</button>
         <button class="btn-tag btn-md" onclick="insertTag('code')" title="Markdown形式で挿入">🧱 コードブロック</button>
@@ -176,60 +176,70 @@ border-radius: 4px;
         <button class="btn-tag btn-html" onclick="insertTag('mark')" title="HTML形式で挿入">🖍️ ハイライト</button>
         <button class="btn-tag btn-html" onclick="insertTag('info')" title="HTML形式で挿入">✅ 情報</button>
         <button class="btn-tag btn-html" onclick="insertTag('warn')" title="HTML形式で挿入">⚠️ 注意</button>
-        <button class="btn-tag btn-html" onclick="insertTag('alert')" title="HTML形式で挿入">🚫 危険</button>
+        <button class="btn-tag btn-html" onclick="insertTag('alert')" title="HTML形式で挿入">🚫 警告</button>
         <button class="btn-tag btn-html" onclick="insertTag('br_hr')" title="HTML形式で挿入">➖ 改行&区切り線</button>
     </div>
 
-    <div class="container">
-        <textarea id="markdown-input" placeholder="Input Markdown..."></textarea>
-        <div id="html-output" class="output"></div>
-    </div>
+    <div class="main-container">
+        <!-- 左側：入力と設定 -->
+        <div class="editor-section">
+            <textarea id="markdown-input" placeholder="Input Markdown..."></textarea>
 
-    <div class="btn-group">
-        <button class="btn-preview" onclick="openPreview()">Preview HTML</button>
-        <button class="btn-copy" onclick="copyToClipboard()">Copy HTML source</button>
-        <span id="copy-message" class="copy-msg" style="display: none;">コピーしたにゃん！</span>
+            <div class="settings-wrapper">
+                <div class="settings-area">
+                    <label>Preview画面に適用するCSS</label>
+                    <textarea id="css-input"></textarea>
+                </div>
+
+                <div class="settings-area">
+                    <label>Preview画面に適用するHTML {{content}}部分に変換結果が入る</label>
+                    <textarea id="wrapper-input"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側：出力とボタン -->
+        <div class="editor-section">
+            <div id="html-output" class="output"></div>
+            <div class="bottom-controls">
+                <button class="btn-preview" onclick="openPreview()">Preview HTML</button>
+                <button class="btn-copy" onclick="copyToClipboard()">Copy HTML source</button>
+                <span id="copy-message" class="copy-msg" style="display: none;">コピーしたにゃん！</span>
+            </div>
+        </div>
     </div>
 
     <script>
-        // プレビュー用CSS
-        const commonCSS = `
-            body { font-family: sans-serif; line-height: 1.6; padding: 40px; max-width: 750px; margin: auto; background: white; color: #333; }
-            blockquote { border-left: 5px solid #ccc; margin: 1.5em 20px; padding: 10px 20px; color: #666;background-color: #f9f9f9; }
-            mark { background-color: #fff176; }
-            :not(pre) > code {
-                background-color: #f0f0f0;
-                color: #c7254e;
-                padding: 2px 4px;
-                border-radius: 4px;
-                font-family: monospace;
-                font-size: 90%;
-            }
-            .mdc-info-box {
-                background-color: #e8f5e9;
-                border-left: 5px solid #4caf50;
-                padding: 15px;
-                margin: 10px 0;
-                border-radius: 4px;
-            }
-            .mdc-warn-box {
-                background-color: #fff3e0;
-                border-left: 5px solid #ff9800;
-                padding: 15px;
-                margin: 10px 0;
-                border-radius: 4px;
-            }
-            .mdc-alert-box {
-                background-color: #ffebee;
-                border-left: 5px solid #f44336;
-                padding: 15px;
-                margin: 10px 0;
-                border-radius: 4px;
-            }
-            `;
+        const defaultCSS = `body { font-family: sans-serif; line-height: 1.6; padding: 40px; max-width: 750px; margin: auto; background: white; color: #333; }
+blockquote { border-left: 5px solid #ccc; margin: 1.5em 20px; padding: 10px 20px; color: #666; background-color: #f9f9f9; }
+mark { background-color: #fff176; }
+:not(pre) > code { background-color: #f0f0f0; color: #c7254e; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 90%; }
+.mdc-info-box { background-color: #e8f5e9; border-left: 5px solid #4caf50; padding: 15px; margin: 10px 0; border-radius: 4px; }
+.mdc-warn-box { background-color: #fff3e0; border-left: 5px solid #ff9800; padding: 15px; margin: 10px 0; border-radius: 4px; }
+.mdc-alert-box { background-color: #ffebee; border-left: 5px solid #f44336; padding: 15px; margin: 10px 0; border-radius: 4px; }`;
+
+        const defaultWrapper = `<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Preview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>
+    <style>{{css}}</style>
+</head>
+<body>
+    {{content}}
+    <script>hljs.highlightAll();<\/script>
+</body>
+</html>`;
 
         const input = document.getElementById('markdown-input');
         const output = document.getElementById('html-output');
+        const cssInput = document.getElementById('css-input');
+        const wrapperInput = document.getElementById('wrapper-input');
+
+        // 初期化
+        cssInput.value = defaultCSS;
+        wrapperInput.value = defaultWrapper;
 
         // リアルタイム更新
         input.addEventListener('input', updateOutput);
@@ -247,42 +257,17 @@ border-radius: 4px;
 
             let insertText = "";
             switch (type) {
-                case 'strong':
-                    insertText = '**' + (selectedText || '強調') + '**';
-                    break;
-                case 'link':
-                    insertText = '[' + (selectedText || 'テキスト') + '](https://google.com)';
-                    break;
-                case 'quote':
-                    insertText = '\n> ' + (selectedText || '引用文') + '\n';
-                    break;
-                case 'table':
-                    insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n';
-                    break;
-                case 'inline_code':
-                    insertText = '`' + (selectedText || 'code') + '`';
-                    break;
-                case 'code':
-                    insertText = '\n```\n' + (selectedText || 'code here') + '\n```\n';
-                    break;
-                case 'mark':
-                    insertText = '<mark>' + (selectedText || 'ハイライト') + '</mark>';
-                    break;
-                case 'info':
-                    insertText = '<div class="mdc-info-box">\n<strong>✅ 情報</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n';
-                    break;
-                case 'warn':
-                    insertText = '<div class="mdc-warn-box">\n<strong>⚠️ 注意</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n';
-                    break;
-                case 'alert':
-                    insertText = '<div class="mdc-alert-box">\n<strong>🚫 危険！</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n';
-                    break;
-                case 'br_hr':
-                    insertText = '\n<br>\n<hr>\n<br>\n';
-                    break;
-                    // case 'code':
-                //     insertText = '<pre><code>\n' + (selectedText || 'code here') + '\n</code></pre>\n';
-                //     break;
+                case 'strong': insertText = '**' + (selectedText || '強調') + '**'; break;
+                case 'link': insertText = '[' + (selectedText || 'テキスト') + '](https://google.com)'; break;
+                case 'quote': insertText = '\n> ' + (selectedText || '引用文') + '\n'; break;
+                case 'table': insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n'; break;
+                case 'inline_code': insertText = '`' + (selectedText || 'code') + '`'; break;
+                case 'code': insertText = '\n```\n' + (selectedText || 'code here') + '\n```\n'; break;
+                case 'mark': insertText = '<mark>' + (selectedText || 'ハイライト') + '</mark>'; break;
+                case 'info': insertText = '<div class="mdc-info-box">\n<strong>✅ 情報</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
+                case 'warn': insertText = '<div class="mdc-warn-box">\n<strong>⚠️ 注意</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
+                case 'alert': insertText = '<div class="mdc-alert-box">\n<strong>🚫 警告！</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
+                case 'br_hr': insertText = '\n<br>\n<hr>\n<br>\n'; break;
             }
 
             // 選択範囲を新しい文字列で置き換える
@@ -298,32 +283,23 @@ border-radius: 4px;
 
         function copyToClipboard() {
             const msgSpan = document.getElementById('copy-message');
-
             navigator.clipboard.writeText(output.textContent).then(() => {
                 // メッセージを表示
                 msgSpan.style.display = "inline-block";
-
                 // 2秒（2000ミリ秒）後にメッセージを消す
-                setTimeout(() => {
-                    msgSpan.style.display = "none";
-                }, 2000);
-            }).catch(err => {
-                console.error('コピーに失敗したにゃん...: ', err);
+                setTimeout(() => { msgSpan.style.display = "none"; }, 2000);
             });
         }
 
         function openPreview() {
-            const htmlContent = marked.parse(input.value);
+            const markdownHTML = marked.parse(input.value);
+            const userCSS = cssInput.value;
+            let fullHTML = wrapperInput.value;
+            // プレースホルダーの置換
+            fullHTML = fullHTML.replace('{{css}}', userCSS);
+            fullHTML = fullHTML.replace('{{content}}', markdownHTML);
             const previewWin = window.open('', 'previewWin', 'width=800,height=600');
-
-            // document.write で中身を組み立てる
-            previewWin.document.write('<html><head><title>HTML Preview</title>');
-            previewWin.document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">');
-            previewWin.document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>');
-            previewWin.document.write('<style>' + commonCSS + '</style></head><body>');
-            previewWin.document.write(htmlContent);
-            previewWin.document.write('<script>hljs.highlightAll();<\/script></body></html>');
-
+            previewWin.document.write(fullHTML);
             previewWin.document.close();
         }
     </script>
