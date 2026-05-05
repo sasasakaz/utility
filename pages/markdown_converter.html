@@ -257,16 +257,39 @@ mark { background-color: #fff176; }
 
             let insertText = "";
             switch (type) {
+                case 'table':
+                    if (selectedText.trim()) {
+                        // TSV（またはスペース区切り）をテーブルに変換するロジック
+                        const lines = selectedText.trim().split('\n');
+                        const rows = lines.map(line => line.split(/\t/)); // タブで分割
+
+                        if (rows.length > 0) {
+                            let tableMd = "";
+                            rows.forEach((cols, index) => {
+                                tableMd += '| ' + cols.join(' | ') + ' |\n';
+                                // 1行目の後にセパレーターを入れる
+                                if (index === 0) {
+                                    tableMd += '| ' + cols.map(() => '---').join(' | ') + ' |\n';
+                                }
+                            });
+                            insertText = tableMd;
+                        }
+                    } else {
+                        // 何も選択されていない時はデフォルトのテンプレート
+                        insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n';
+                    }
+                    break;
+                // --- 他のケース（strong, link等） ---
                 case 'strong': insertText = '**' + (selectedText || '強調') + '**'; break;
                 case 'link': insertText = '[' + (selectedText || 'テキスト') + '](https://google.com)'; break;
                 case 'quote': insertText = '\n> ' + (selectedText || '引用文') + '\n'; break;
-                case 'table': insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n'; break;
+                // case 'table': insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n'; break;
                 case 'inline_code': insertText = '`' + (selectedText || 'code') + '`'; break;
                 case 'code': insertText = '\n```\n' + (selectedText || 'code here') + '\n```\n'; break;
                 case 'mark': insertText = '<mark>' + (selectedText || 'ハイライト') + '</mark>'; break;
                 case 'info': insertText = '<div class="mdc-info-box">\n<strong>✅ 情報</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
                 case 'warn': insertText = '<div class="mdc-warn-box">\n<strong>⚠️ 注意</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
-                case 'alert': insertText = '<div class="mdc-alert-box">\n<strong>🚫 警告！</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
+                case 'alert': insertText = '<div class="mdc-alert-box">\n<strong>🚫 警告</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
                 case 'br_hr': insertText = '\n<br>\n<hr>\n<br>\n'; break;
             }
 
