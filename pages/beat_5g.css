@@ -228,3 +228,14 @@ summary {
   /* 余白を含めた計算にする */
   font-size: 0.85rem;
 }
+
+#footer {
+  display: none;
+  width: 100%;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+  clear: both;
+  /* 回り込みを解除 */
+}

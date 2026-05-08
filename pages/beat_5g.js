@@ -266,6 +266,7 @@ function calc_BE() {
     }
   }
   document.getElementById("result_container").style.display = "block";
+  document.getElementById("footer").style.display = "block";
 }
 
 
@@ -309,6 +310,11 @@ window.onload = function () {
         resultContainer.style.display = "none";
       }
 
+      // フッターを隠す
+      const footer = document.getElementById("footer");
+      if (footer) {
+        footer.style.display = "none";
+      }
     });
   }
 };
