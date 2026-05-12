@@ -7,23 +7,24 @@ body {
   color: #444;
   width: 95%;
   max-width: 1280px;
-  margin: 20px auto;
+  margin: 1rem auto;
 }
 
 /* 左右に分ける親要素 */
 .main-container {
   display: flex;
-  gap: 40px;
+  /* 横並びにするための宣言 */
+  gap: 2.5rem;
   /* 左右の隙間 */
   align-items: flex-start;
-  /* 中身が短くても上に詰める */
+  /* 中身が短くても（子要素の高さが違っても）上に詰める */
 }
 
 /* 左カラムの幅を固定 */
 .sidebar {
-  flex: 0 0 300px;
-  /* 300pxから動かないように固定 */
-  top: 20px;
+  flex: 0 0 320px;
+  /* 320pxから動かないように固定 */
+  top: 1rem;
 }
 
 /* 右カラムは残りの幅を全部使う */
@@ -36,8 +37,8 @@ body {
 /* 横並びに */
 .input-fields {
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .input-group {
@@ -46,27 +47,32 @@ body {
   flex: 1;
 }
 
+
 .input-group label {
-  /* font-weight: bold; */
+  min-height: 1.5rem;
+  /* 最低限の高さは確保しつつ */
+  padding: 0.5rem;
+  /* 上下に隙間を作って、中身が増えたら勝手に伸びるようにする */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  /* 2行になった時の行間を整える */
+  gap: 0;
+  /* ラベルと入力欄をくっつけたいなら0、少し空けたいなら 0.25rem とか */
+  text-align: center;
   color: #0d90f3;
   background-color: #d0ebfd;
-  padding: 5px 10px;
   border: 1px solid #a5d1f1;
   border-bottom: none;
-  height: 3.2rem;
-  /* 2行分くらいの高さを確保 */
-  display: flex;
-  /* 中の文字を上下中央にするため */
-  align-items: center;
-  /* 垂直方向の中央寄せ */
-  line-height: 1.2;
-  /* 行間を少し詰める */
 }
+
+
 
 textarea,
 input {
   font-size: 0.85rem;
-  padding: 10px;
+  padding: 0.75rem;
   border: 1px solid #a5d1f1;
   box-sizing: border-box;
 }
@@ -79,116 +85,152 @@ input {
 }
 
 
-/* テーブルを包むコンテナに高さを設定する */
+/* テーブルを包むコンテナに高さを設定 */
+/* テーブル行数が少なくてもdetailsは上に詰めたくないため */
 .table-container {
-  min-height: 220px;
+  min-height: 14rem;
   /* ここで高さを確保！ */
   display: flex;
   flex-direction: column;
 }
 
-#confirmation_table {
+#confirmation-table {
   background-color: #f2f2f2;
   border-collapse: collapse;
   width: 100%;
-  margin-top: 15px;
+  margin-top: 1rem;
   font-size: 0.85rem;
 }
 
-#confirmation_table th,
-#confirmation_table td {
-  padding: 8px 4px;
+#confirmation-table th,
+#confirmation-table td {
+  padding: 0.5rem 0.25rem;
   border-bottom: 1px solid #ddd;
 }
 
-#confirmation_table th {
+#confirmation-table th {
   color: #555;
   text-align: center;
 }
 
+/* 異常値のテキスト用クラス */
+.invalid-value {
+  color: #d9534f;
+  /* 警告っぽい赤 */
+  font-weight: bold;
+}
 
-/* details要素の上の余白を作る */
+/* 異常値のセルの背景を薄く赤くする */
+.invalid-cell {
+  background-color: #f2dede !important;
+}
+
+
+/* details要素（左カラム）の上の余白を作る */
 details {
-  margin-top: 30px;
+  margin-top: 2rem;
   /* ここでテーブルとの間隔をしっかり空ける */
   cursor: pointer;
   /* 折りたたみ部分にマウスを乗せると指マークになるように */
 }
 
-/* summary（見出し部分）の調整 */
+/* summary（detailsの見出し部分）の調整 */
 summary {
   font-size: 0.85rem;
   color: #666;
   outline: none;
 }
 
-/* 推定回数の入力欄があるブロックの余白をリセット */
+/* サンプリング回数の入力欄があるブロックの余白をリセット */
 .setting-group {
-  margin-top: 10px;
+  margin-top: 0.5rem;
   /* details内の余白なので、少し詰めてもOK */
 }
 
 
 /* ボタン関係 */
-.c_button,
-.r_button {
-  padding: 10px 20px;
+.action-buttons {
+  margin-top: 0.5rem;
+}
+
+.c-button,
+.r-button {
+  padding: 0.5rem 1.25rem;
   cursor: pointer;
   font-size: 1rem;
   border: 1px solid #68779a;
-  border-radius: 6px;
+  border-radius: 0.5rem;
   transition: 0.3s;
   /* 動きを滑らかに */
+  box-sizing: border-box;
+  display: inline-block;
+  /* 念のため、並び方を揃える */
+  vertical-align: middle;
+  /* 縦の並び位置を真ん中に揃える */
 }
 
-.c_button {
+.c-button {
   background: #cbe8fa;
   width: 200px;
 }
 
-.r_button {
+.r-button {
   background: #fff;
-  width: 100px;
+  width: 120px;
 }
 
-.c_button:hover {
+.c-button:hover {
   background-color: #E6A1C0;
 }
 
-.r_button:hover {
+.r-button:hover {
   background-color: #FFFF00;
 }
 
 
 
-/* 結果表示の装飾 */
+/* 推定完了の装飾 */
 .mdc-info-box {
   background-color: #e8f5e9;
-  border-left: 5px solid #4caf50;
-  padding: 10px;
-  margin: 20px 0;
-  /* width: 150px; */
-  border-radius: 4px;
+  padding: 0.25rem 1rem;
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+  color: #155724;
 }
 
 
+
+#result-container {
+  display: none;
+}
+
+/* 基本は全部隠す。初期状態もこれでOK */
+.tab-panel {
+  display: none;
+}
+
+/* activeクラスがついているパネルだけ出す */
+.tab-panel.active {
+  display: block;
+}
+
 /* タブ全体のコンテナ */
 .tabs {
-  margin: 20px 0;
+  margin: 1.25rem 0;
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 /* タブボタンの基本スタイル */
 .tab-btn {
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   /* サイズを大きく */
   font-size: 1.1rem;
   /* 文字を大きく */
   cursor: pointer;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  border-radius: 8px 8px 0 0;
+  border-radius: 0.5rem 0.5rem 0 0;
   /* 上だけ丸くする */
   transition: 0.3s;
 }
@@ -208,33 +250,127 @@ summary {
 }
 
 
-#comparison_charts_container {
-  display: flex;
-  flex-wrap: wrap;
-  /* 幅が足りなくなったら自動で改行 */
-  gap: 20px;
-}
-
-.myDiv {
-  flex: 1 1 200px;
-  /* 0 1 ではなく 1 1 にして、伸び縮みしやすくする */
-  min-width: 200px;
-  /* これ以上は小さくならない限界 */
-  max-width: 300px;
-  /* 大きくなりすぎないように */
-  padding: 10px;
+/* 全群の事後分布 */
+#summary-chart {
+  width: 640px;
+  height: 320px;
+  /* 親の幅いっぱいに使う */
+  max-width: 640px;
+  /* 大きくなりすぎない上限 */
+  margin-bottom: 1.25rem;
+  padding: 0.5rem;
   background: #fff;
   box-sizing: border-box;
-  /* 余白を含めた計算にする */
+}
+
+
+#all-groups-hdi-container {
+  width: 720px;
+  max-width: 720px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hdi-individual-plot {
+  width: 640px;
+  max-width: 640px;
+  height: 40px;
+}
+
+
+.mdc-warn-box {
+  background-color: #FFF3CD;
+  border-color: #FFEEBA;
+  padding: 0.25rem 1rem;
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+  color: #856404;
+}
+
+.mdc-info2-box {
+  background-color: #e0f0ff;
+  border-color: #b8daff;
+  padding: 0.25rem 1rem;
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+  color: #004085;
+}
+
+
+
+/* 推定結果テーブルのスタイル */
+.summary-table {
+  width: 400px;
+  max-width: 640px;
+  border-collapse: collapse;
+  margin: 0.5rem 3rem;
   font-size: 0.85rem;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+}
+
+.summary-table th {
+  background-color: #f8f9fa;
+  color: #333;
+  text-align: center;
+}
+
+.summary-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+
+/* detailsの左の余白を作る */
+.summary-table-details {
+  margin-left: 2rem;
+  cursor: pointer;
+  /* 折りたたみ部分にマウスを乗せると指マークになるように */
+}
+
+
+#all-diffs-summary-container {
+  width: 640px;
+  max-width: 640px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+
+/* 2群間比較の「親コンテナ」（ガワだけ） */
+#diff-charts-container {
+  display: flex;
+  /* ここで「横に並べるぞ」と宣言 */
+  flex-wrap: wrap;
+  /* 入りきらない分は折り返す */
+  gap: 1rem;
+  /* グラフ同士の隙間 */
+  width: 100%;
+}
+
+/* 2群間比較の「個別のグラフ」（JSで生成される要素につける） */
+.diff-plot {
+  flex: 1 1 200px;
+  /* 200pxを基準に伸び縮み */
+  min-width: 200px;
+  max-width: 300px;
+  height: 200px;
+  padding: 0.5rem;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 #footer {
   display: none;
   width: 100%;
   text-align: center;
-  margin-top: 40px;
-  padding: 20px 0;
+  margin-top: 2.5rem;
+  padding: 1.25rem 0;
   border-top: 1px solid #eee;
   clear: both;
   /* 回り込みを解除 */
