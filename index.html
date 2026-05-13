@@ -2,110 +2,145 @@
 <html lang="ja">
 
 <head>
-<!-- Google Tag Manager -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QRGD44CZBH"></script>
-<script>
+  <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sasasa Utility</title>
+  <link href='https://sasasakaz.github.io/utility/index.html' rel='canonical'>
+  <link rel="icon" href="https://github.com/sasasakaz.png">
+  <meta name='description' content='ベイズ推定やMarkdown変換など、ブラウザで完結する便利ツール集。'>
+  <meta name='keywords' content='ベイズ推定,平均の差,比率の差,多重比較,統計解析,Streamlit,Markdown変換'>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sasasa Utility">
+  <meta property="og:description" content="ベイズ推定やMarkdown変換など、ブラウザで完結する便利ツール集。">
+  <meta property="og:url" content="https://sasasakaz.github.io/utility/index.html">
+  <meta property="og:site_name" content="Sasasa Utility">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:image" content="https://github.com/sasasakaz.png">
+
+  <base target="_blank">
+
+  <!-- Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QRGD44CZBH"></script>
+  <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-QRGD44CZBH');
-</script><!-- End Google Tag Manager -->
+  </script><!-- End Google Tag Manager -->
 
-    <meta charset="UTF-8">
-    <title>Sasasa Utility</title>
-    <base target="_blank">
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 900px;
-            /* 少し幅を広げて段組しやすくする */
-            margin: 40px auto;
-            padding: 20px;
-            background: #f9f9f9;
-        }
+  <style>
+    body {
+      font-family: "Open Sans", verdana, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol";
+      max-width: 900px;
+      /* 少し幅を広げて段組しやすくする */
+      margin: 0 auto 2.5rem;
+      padding: 1.25rem;
+      background: #f9f9f9;
+    }
 
-        h1 {
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
+    h1 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
 
-        /* ここが段組のポイント！ */
-        .grid-container {
-            display: grid;
-            /* 画面幅に合わせて、最小280pxのカードを自動で並べる */
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            /* カード同士の隙間 */
-        }
+    /* ここが段組のポイント！ */
+    .grid-container {
+      display: grid;
+      /* 画面幅に合わせて、最小280pxのカードを自動で並べる */
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      /* カード同士の隙間 */
+    }
 
-        .tool-link {
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-            border: 1px solid #eee;
-        }
+    .tool-link {
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem;
+      background: white;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      color: #333;
+      box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+      border: 1px solid #eee;
+    }
 
-        .tool-link:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            border-color: #007bff;
-        }
+    .tool-link:hover {
+      transform: translateY(-0.25rem);
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      border-color: #007bff;
+    }
 
-        .tool-link strong {
-            font-size: 1.1em;
-            color: #007bff;
-        }
+    .tool-link strong {
+      font-size: 1.1em;
+      color: #007bff;
+    }
 
-        .description {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 10px;
-            line-height: 1.5;
-        }
-    </style>
+    .description {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    #footer {
+      width: 100%;
+      font-size: 0.85em;
+      text-align: center;
+      margin-top: 2.5rem;
+      padding: 1.25rem 0;
+      border-top: 1px solid #eee;
+      clear: both;
+      /* 回り込みを解除 */
+    }
+  </style>
 </head>
 
 <body>
-    <h1>🛠 Utility Tools</h1>
-    <div class="grid-container">
-        <a href="https://app-vnw86ofz36yudmdxgewqh3.streamlit.app" class="tool-link">
-            <strong>🦊 Easy Bayesian Estimation for Means</strong>
-            <div class="description">平均の差のベイズ推定を簡単実行。</div>
-        </a>
-        <a href="pages/beat_5g.html" class="tool-link">
-            <strong>🦁 Easy Bayesian Estimation for Proportions</strong>
-            <div class="description">比率の差のベイズ推定を簡単実行。</div>
-        </a>
-        <a href="pages/markdown_converter.html" class="tool-link">
-            <strong>🐶 Markdown Converter</strong>
-            <div class="description">MarkdownをHTMLに変換する。</div>
-        </a>
-        <a href="pages/diff_viewer.html" class="tool-link">
-            <strong>🐯 Diff Viewer</strong>
-            <div class="description">テキストの差分を左右で視覚的に比較。</div>
-        </a>
-        <a href="pages/amazon_url_shortener.html" class="tool-link">
-            <strong>🦄 Amazon URL Shortener</strong>
-            <div class="description">Amazonの長いURLを不要箇所削って短くする。</div>
-        </a>
-        <a href="pages/qr_contact_url_generator.html" class="tool-link">
-            <strong>🐹 QR Contact URL Generator</strong>
-            <div class="description">メアドやSNSアカウントなど連絡先QRコードを生成する。</div>
-        </a>
-        <a href="pages/url_to_qr_code.html" class="tool-link">
-            <strong>🐼 URL to QR</strong>
-            <div class="description">URLをQRコード化して共有しやすくする。</div>
-        </a>
-    </div>
+  <h1>🛠 Utility Tools</h1>
+  <div class="grid-container">
+    <a href="https://app-vnw86ofz36yudmdxgewqh3.streamlit.app" class="tool-link">
+      <strong>🦊 Easy Bayesian Estimation for Means</strong>
+      <div class="description">平均の差のベイズ推定を簡単実行。</div>
+    </a>
+    <a href="pages/beat_5g.html" class="tool-link">
+      <strong>🦁 Easy Bayesian Estimation for Proportions</strong>
+      <div class="description">比率の差のベイズ推定を簡単実行。</div>
+    </a>
+    <a href="pages/markdown_converter.html" class="tool-link">
+      <strong>🐶 Markdown Converter</strong>
+      <div class="description">MarkdownをHTMLに変換する。</div>
+    </a>
+    <a href="pages/diff_viewer.html" class="tool-link">
+      <strong>🐯 Diff Viewer</strong>
+      <div class="description">テキストの差分を左右で視覚的に比較。</div>
+    </a>
+    <a href="pages/amazon_url_shortener.html" class="tool-link">
+      <strong>🦄 Amazon URL Shortener</strong>
+      <div class="description">Amazonの長いURLを不要箇所削って短くする。</div>
+    </a>
+    <a href="pages/qr_contact_url_generator.html" class="tool-link">
+      <strong>🐹 QR Contact URL Generator</strong>
+      <div class="description">メアドやSNSアカウントなど連絡先QRコードを生成する。</div>
+    </a>
+    <a href="pages/url_to_qr_code.html" class="tool-link">
+      <strong>🐼 URL to QR</strong>
+      <div class="description">URLをQRコード化して共有しやすくする。</div>
+    </a>
+  </div>
+<footer id="footer">
+  <div class="footer-links">
+    <a href="https://github.com/sasasakaz/utility" target="_blank">⭐ GitHub Repository</a>
+    <span class="separator">|</span>
+    <a href="https://github.com/sasasakaz" target="_blank">Profile</a>
+  </div>
+  <p>Coded by sasasakaz 2022-2026</p>
+</footer>
 </body>
 
 </html>
