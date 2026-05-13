@@ -10,15 +10,13 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown to HTML</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="../common.css">
     <style>
         body {
-            font-family: sans-serif;
             font-size: 0.9rem;
-            margin: 1.25rem;
-            background: #f4f4f4;
-            color: #333;
         }
 
         h2 {
@@ -29,8 +27,8 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
         .main-container {
             display: flex;
             gap: 1.25rem;
-            align-items: flex-start;
             /* 上揃え */
+            align-items: flex-start;
         }
 
         .editor-section {
@@ -76,8 +74,8 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
         .settings-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
             /* 設定エリア同士の間隔 */
+            gap: 0.5rem;
             margin-top: 0.5rem;
         }
 
@@ -118,9 +116,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
             padding: 0.5rem 1rem;
             border: none;
             border-radius: 0.25rem;
-            cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
             font-size: 0.8rem;
         }
 
@@ -161,15 +157,6 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
             opacity: 0.8;
         }
 
-        #footer {
-            width: 100%;
-            text-align: center;
-            margin-top: 2.5rem;
-            padding: 1.25rem 0;
-            border-top: 1px solid #eee;
-            clear: both;
-            /* 回り込みを解除 */
-        }
     </style>
 </head>
 

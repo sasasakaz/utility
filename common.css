@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+/* すべての要素でサイズ計算を正確にする */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Open Sans", verdana, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol";
+  /* 背景色：少し落ち着いたグレー */
+  background: #f4f4f4;
+  /* 文字色：真っ黒より少しだけ優しい黒 */
+  color: #333;
+  /* 画面が大きくても広がらないように */
+  max-width: 1280px;
+  margin: 0 auto 2rem;
+  padding: 1rem;
+}
+
+/* 画像が親要素を突き抜けないように */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* リンクとボタン要素 */
+a,
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* 親の文字色を引き継ぐ */
+  color: inherit;
+}
+
+#footer {
+  width: 100%;
+  font-size: 0.85em;
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid #ddd;
+  clear: both;
+}

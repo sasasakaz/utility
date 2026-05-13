@@ -6,51 +6,138 @@ Created: 2025-10-05
 Description: Amazonの長いURLからASINを抽出してシンプルな商品ページURLに変換するにゃん。
 Note: 
 -->
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Amazon URL Shortener</title>
+  <link rel="stylesheet" href="../common.css">
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Hiragino Kaku Gothic ProN',Meiryo,Arial;margin:1rem;background:#fafafa;color:#222}
-    .card{background:#fff;border-radius:0.5rem;padding:1rem;box-shadow:0 0.5rem 1rem rgba(0,0,0,0.06);max-width:640px;margin:0 auto}
-
-    input,select,button{font-size:0.9rem;padding:0.5rem;border-radius:0.5rem;border:1px solid #ddd;width:100%;box-sizing:border-box}
-    label{font-weight:600;margin-top:0.5rem;display:block}
-    .row{display:flex;gap:0.5rem}
-    .row > *{flex:1}
-
-    .muted{color:#666;font-size:0.9rem}
-    .out{background:#f6f8fa;padding:0.5rem;border-radius:0.5rem;margin-top:0.5rem;word-break:break-all}
-
-    .btn{cursor:pointer;background:#007bff;color:#fff;border:none;transition:background 0.2s;width:100%}
-    .btn:hover{background:#0069d9}
-
-    .small{font-size:0.9rem;padding:0.5rem}
-
-    .actions{display:flex;gap:0.5rem;margin-top:0.5rem}
-    #copyMsg{margin-top:0.5rem;color:green;font-size:0.9rem;display:none}
-
-    .url-row{display:flex;gap:0.5rem;align-items:center;width:100%}
-    .url-row input{flex:1;min-width:0}
-    .clear-btn{
-      flex:0 0 2rem;
-      height:2rem;
-      padding:0;
-      border-radius:0.5rem;
-      background:#eee;
-      color:#555;
-      border:1px solid #ddd;
-      cursor:pointer;
-      font-size:1rem;
-      line-height:1;
+    .card {
+      background: #fff;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.06);
+      max-width: 640px;
+      margin: 0 auto
     }
-    .clear-btn:hover{background:#ddd}
 
-    #history{margin-top:1rem;font-size:0.9rem}
-    #history ul{list-style:none;padding-left:0;margin:0}
-    #history li{padding:0.25rem 0;border-bottom:1px solid #eee;word-break:break-all}
+    input,
+    select,
+    button {
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ddd;
+      width: 100%;
+      box-sizing: border-box
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 0.5rem;
+      display: block
+    }
+
+    .row {
+      display: flex;
+      gap: 0.5rem
+    }
+
+    .row>* {
+      flex: 1
+    }
+
+    .muted {
+      color: #666;
+      font-size: 0.9rem
+    }
+
+    .out {
+      background: #f6f8fa;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+      word-break: break-all
+    }
+
+    .btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      transition: background 0.2s;
+      width: 100%
+    }
+
+    .btn:hover {
+      background: #0069d9
+    }
+
+    .small {
+      font-size: 0.9rem;
+      padding: 0.5rem
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem
+    }
+
+    #copyMsg {
+      margin-top: 0.5rem;
+      color: green;
+      font-size: 0.9rem;
+      display: none
+    }
+
+    .url-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      width: 100%
+    }
+
+    .url-row input {
+      flex: 1;
+      min-width: 0
+    }
+
+    .clear-btn {
+      flex: 0 0 2rem;
+      height: 2rem;
+      padding: 0;
+      border-radius: 0.5rem;
+      background: #eee;
+      color: #555;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .clear-btn:hover {
+      background: #ddd
+    }
+
+    #history {
+      margin-top: 1rem;
+      font-size: 0.9rem
+    }
+
+    #history ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0
+    }
+
+    #history li {
+      padding: 0.25rem 0;
+      border-bottom: 1px solid #eee;
+      word-break: break-all
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <h2>Amazon URL Shortener</h2>
@@ -121,53 +208,54 @@ Note:
     const copyMsg = document.getElementById('copyMsg');
     const historyList = document.getElementById('historyList');
 
-    document.getElementById('clearUrl').addEventListener('click', ()=>{
+    document.getElementById('clearUrl').addEventListener('click', () => {
       urlEl.value = '';
       urlEl.focus();
     });
 
-    function extractASIN(url){
-      try{
+    function extractASIN(url) {
+      try {
         const u = decodeURIComponent(url);
-        for(const p of patterns){
+        for (const p of patterns) {
           const m = u.match(p);
-          if(m) return m[1].toUpperCase();
+          if (m) return m[1].toUpperCase();
         }
         const fallback = u.match(/([A-Z0-9]{10})(?:[/?]|$)/i);
-        if(fallback) return fallback[1].toUpperCase();
-      }catch(e){ console.warn('extractASIN error', e); }
+        if (fallback) return fallback[1].toUpperCase();
+      } catch (e) { console.warn('extractASIN error', e); }
       return null;
     }
 
-    function buildCleanUrl(domain, style, asin){
-      if(!asin) return '';
+    function buildCleanUrl(domain, style, asin) {
+      if (!asin) return '';
       const host = 'www.amazon.' + domain;
       return style === 'dp' ? `https://${host}/dp/${asin}` : `https://${host}/gp/product/${asin}`;
     }
 
-    function addHistory(url){
+    function addHistory(url) {
       const li = document.createElement('li');
       li.textContent = url;
       historyList.prepend(li);
     }
 
-    document.getElementById('shorten').addEventListener('click', ()=>{
+    document.getElementById('shorten').addEventListener('click', () => {
       const raw = urlEl.value.trim();
-      if(!raw){ alert('Enter the URL.'); return; }
+      if (!raw) { alert('Enter the URL.'); return; }
       const asin = extractASIN(raw);
-      if(!asin){ cleanOut.textContent = 'The ASIN was not found. Please check the URL.'; return; }
+      if (!asin) { cleanOut.textContent = 'The ASIN was not found. Please check the URL.'; return; }
       const url = buildCleanUrl(domainEl.value, styleEl.value, asin);
       cleanOut.textContent = url;
       addHistory(url);
     });
 
-    document.getElementById('copyClean').addEventListener('click', async ()=>{
+    document.getElementById('copyClean').addEventListener('click', async () => {
       const txt = cleanOut.textContent;
-      if(!txt || txt === '—') return;
+      if (!txt || txt === '—') return;
       await navigator.clipboard.writeText(txt);
       copyMsg.style.display = 'inline';
-      setTimeout(()=>{ copyMsg.style.display = 'none'; },2000);
+      setTimeout(() => { copyMsg.style.display = 'none'; }, 2000);
     });
   </script>
 </body>
+
 </html>

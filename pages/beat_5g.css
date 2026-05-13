@@ -1,29 +1,25 @@
 @charset "utf-8";
 
-/* 全体の基本設定 */
 body {
-  font-family: "Open Sans", verdana, arial, sans-serif;
   font-size: 0.9rem;
-  color: #444;
   width: 95%;
-  max-width: 1280px;
-  margin: 1rem auto;
+  background: #fff;
 }
 
 /* 左右に分ける親要素 */
 .main-container {
-  display: flex;
   /* 横並びにするための宣言 */
-  gap: 2.5rem;
+  display: flex;
   /* 左右の隙間 */
-  align-items: flex-start;
+  gap: 2.5rem;
   /* 中身が短くても（子要素の高さが違っても）上に詰める */
+  align-items: flex-start;
 }
 
 /* 左カラムの幅を固定 */
 .sidebar {
-  flex: 0 0 320px;
   /* 320pxから動かないように固定 */
+  flex: 0 0 320px;
   top: 1rem;
 }
 
@@ -49,17 +45,17 @@ body {
 
 
 .input-group label {
+  /* 320pxから動かないように固定 */
   min-height: 1.5rem;
-  /* 最低限の高さは確保しつつ */
-  padding: 0.5rem;
   /* 上下に隙間を作って、中身が増えたら勝手に伸びるようにする */
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.2;
   /* 2行になった時の行間を整える */
-  gap: 0;
+  line-height: 1.2;
   /* ラベルと入力欄をくっつけたいなら0、少し空けたいなら 0.25rem とか */
+  gap: 0;
   text-align: center;
   color: #0d90f3;
   background-color: #d0ebfd;
@@ -88,8 +84,8 @@ input {
 /* テーブルを包むコンテナに高さを設定 */
 /* テーブル行数が少なくてもdetailsは上に詰めたくないため */
 .table-container {
+  /* ここで高さを確保 */
   min-height: 14rem;
-  /* ここで高さを確保！ */
   display: flex;
   flex-direction: column;
 }
@@ -115,8 +111,8 @@ input {
 
 /* 異常値のテキスト用クラス */
 .invalid-value {
-  color: #d9534f;
   /* 警告っぽい赤 */
+  color: #d9534f;
   font-weight: bold;
 }
 
@@ -128,10 +124,10 @@ input {
 
 /* details要素（左カラム）の上の余白を作る */
 details {
-  margin-top: 2rem;
   /* ここでテーブルとの間隔をしっかり空ける */
-  cursor: pointer;
+  margin-top: 2rem;
   /* 折りたたみ部分にマウスを乗せると指マークになるように */
+  cursor: pointer;
 }
 
 /* summary（detailsの見出し部分）の調整 */
@@ -144,7 +140,6 @@ summary {
 /* サンプリング回数の入力欄があるブロックの余白をリセット */
 .setting-group {
   margin-top: 0.5rem;
-  /* details内の余白なので、少し詰めてもOK */
 }
 
 
@@ -156,17 +151,14 @@ summary {
 .c-button,
 .r-button {
   padding: 0.5rem 1.25rem;
-  cursor: pointer;
   font-size: 1rem;
   border: 1px solid #68779a;
   border-radius: 0.5rem;
-  transition: 0.3s;
-  /* 動きを滑らかに */
   box-sizing: border-box;
-  display: inline-block;
   /* 念のため、並び方を揃える */
-  vertical-align: middle;
+  display: inline-block;
   /* 縦の並び位置を真ん中に揃える */
+  vertical-align: middle;
 }
 
 .c-button {
@@ -216,23 +208,26 @@ summary {
 
 /* タブ全体のコンテナ */
 .tabs {
-  margin: 1.25rem 0;
   display: flex;
-  gap: 0.5rem;
+  border-bottom: 2px solid #ddd;
+  /* 下に線を引く */
+  gap: 4px;
+  margin-bottom: 1.5rem;
 }
 
-/* タブボタンの基本スタイル */
+/* タブボタン単品 */
 .tab-btn {
-  padding: 0.75rem 1.5rem;
-  /* サイズを大きく */
-  font-size: 1.1rem;
-  /* 文字を大きく */
-  cursor: pointer;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem 0.5rem 0 0;
-  /* 上だけ丸くする */
-  transition: 0.3s;
+  /* 通常時は背景なし */
+  background: none;
+  border: none;
+  /* 上だけ角丸にする */
+  border-radius: 8px 8px 0 0;
+  padding: 0.75rem 1.25rem;
+  color: #666;
+  position: relative;
+  /* 下線に重ねる */
+  bottom: -2px;
+  font-size: 1rem;
 }
 
 /* ホバー（マウスを乗せたとき） */
@@ -242,11 +237,14 @@ summary {
 
 /* 選択されているタブ（JSでactiveクラスがつく） */
 .tab-btn.active {
-  background-color: #0d90f3;
-  /* メインカラーに合わせる */
-  color: white;
-  border-color: #0d90f3;
+  /* 背景を白にして浮き立たせる */
+  background: #fff;
+  color: #000000;
   font-weight: bold;
+  /* 枠線をつける */
+  border: 2px solid #ddd;
+  /* 下の線だけ消して一体化させる！ */
+  border-bottom-color: #fff;
 }
 
 
@@ -254,9 +252,8 @@ summary {
 #summary-chart {
   width: 640px;
   height: 320px;
-  /* 親の幅いっぱいに使う */
-  max-width: 640px;
   /* 大きくなりすぎない上限 */
+  max-width: 640px;
   margin-bottom: 1.25rem;
   padding: 0.5rem;
   background: #fff;
@@ -329,8 +326,8 @@ summary {
 /* detailsの左の余白を作る */
 .summary-table-details {
   margin-left: 2rem;
-  cursor: pointer;
   /* 折りたたみ部分にマウスを乗せると指マークになるように */
+  cursor: pointer;
 }
 
 
@@ -344,19 +341,19 @@ summary {
 
 /* 2群間比較の「親コンテナ」（ガワだけ） */
 #diff-charts-container {
-  display: flex;
   /* ここで「横に並べるぞ」と宣言 */
-  flex-wrap: wrap;
+  display: flex;
   /* 入りきらない分は折り返す */
-  gap: 1rem;
+  flex-wrap: wrap;
   /* グラフ同士の隙間 */
+  gap: 1rem;
   width: 100%;
 }
 
 /* 2群間比較の「個別のグラフ」（JSで生成される要素につける） */
 .diff-plot {
-  flex: 1 1 200px;
   /* 200pxを基準に伸び縮み */
+  flex: 1 1 200px;
   min-width: 200px;
   max-width: 300px;
   height: 200px;
@@ -367,11 +364,4 @@ summary {
 
 #footer {
   display: none;
-  width: 100%;
-  text-align: center;
-  margin-top: 2.5rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid #eee;
-  clear: both;
-  /* 回り込みを解除 */
 }
