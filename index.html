@@ -49,7 +49,9 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       /* カード同士の隙間 */
-      gap: 1.25rem;
+      /* gap: 1.25rem; */
+      /* スマホの時は隙間を少し小さく、PCではゆったりに可変させる */
+      gap: 1rem;
     }
 
     .tool-link {
@@ -64,6 +66,19 @@
       transition: all 0.2s ease;
       border: 1px solid #eee;
     }
+
+    @media (max-width: 480px) {
+      .tool-link {
+        /* スマホではカード内の余白を少し詰めて、画面を有効活用 */
+        padding: 1rem;
+      }
+
+      h1 {
+        /* スマホではタイトルを少し小さくして、一行に収まりやすくする */
+        font-size: 1.5rem;
+      }
+    }
+
 
     .tool-link:hover {
       transform: translateY(-0.25rem);
@@ -90,7 +105,7 @@
   <div class="grid-container">
     <a href="https://app-vnw86ofz36yudmdxgewqh3.streamlit.app" class="tool-link">
       <strong>🦊 Easy Bayesian Estimation for Means</strong>
-      <div class="description">平均の差のベイズ推定を簡単実行。</div>
+      <div class="description">平均の差のベイズ推定を簡単実行（リンク先がスリープ中のときはYesボタン押して目覚めるまでちょっと待ってね）</div>
     </a>
     <a href="pages/beat_5g.html" class="tool-link">
       <strong>🦁 Easy Bayesian Estimation for Proportions</strong>

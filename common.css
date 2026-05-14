@@ -15,6 +15,10 @@ body {
   max-width: 1280px;
   margin: 0 auto 2rem;
   padding: 1rem;
+  /* スマホで横揺れするのを防ぐ */
+  overflow-x: hidden;
+  /* 文字サイズの自動調整をオフにして意図しない挙動を防ぐ */
+  -webkit-text-size-adjust: 100%;
 }
 
 /* 画像が親要素を突き抜けないように */
@@ -23,14 +27,31 @@ img {
   height: auto;
 }
 
-/* リンクとボタン要素 */
-a,
-button {
+
+/* リンク要素 */
+a {
   cursor: pointer;
   transition: all 0.2s ease;
   /* 親の文字色を引き継ぐ */
   color: inherit;
+  /* 余計な装飾をしない（下線を消すなど） */
+  text-decoration: none;
 }
+
+/* ボタン要素 */
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* 指で押しやすくするために、最低でも44px程度の高さを意識しやすくする */
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  /* 横方向も中央に */
+  justify-content: center;
+  /* ボタンだけフォントが変わるのを防ぐ */
+  font-family: inherit;
+}
+
 
 #footer {
   width: 100%;

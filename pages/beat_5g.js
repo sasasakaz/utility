@@ -156,7 +156,7 @@ function runBayesianEstimation() {
   // --- 準備・バリデーション ---
   const { denoms, numers, groupCount } = getInputData();
   if (groupCount < 2) {
-    return alert("推定には少なくとも2群のデータが必要にゃん。手元にデータがなければresetボタン押してサンプルデータで試してにゃん");
+    return alert("推定には少なくとも2群のデータが必要にゃん。手元にデータがなければClear Allボタン押してサンプルデータで試してにゃん");
   }
 
   // 共通ヘルパー：HDI（最高密度区間）を計算する

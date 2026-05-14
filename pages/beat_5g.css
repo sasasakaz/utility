@@ -1,5 +1,36 @@
 @charset "utf-8";
 
+/* 基本は縦並び（スマホ用） */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  /* 縦に積むにゃん */
+  gap: 1.5rem;
+}
+
+.sidebar {
+  flex: 0 0 auto;
+  /* 幅固定を解除して、画面いっぱいに広げる */
+  width: 100%;
+}
+
+/* 画面幅が 768px（タブレット・PC）以上の時だけ横並びにする */
+@media (min-width: 768px) {
+  .main-container {
+    flex-direction: row;
+    /* 横並びにする */
+    gap: 2.5rem;
+  }
+
+  .sidebar {
+    flex: 0 0 320px;
+    /* PCでは 320px で固定！ */
+  }
+}
+
+
+
+
 body {
   font-size: 0.9rem;
   width: 95%;
@@ -145,37 +176,58 @@ summary {
 
 /* ボタン関係 */
 .action-buttons {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  /* 横並びにする */
+  display: flex;
+  /* 高い方のボタンに高さを合わせる */
+  align-items: stretch;
+  /* ボタン同士の隙間を指一本分あける */
+  gap: 0.75rem;
+  /* スマホで横幅が足りない時は自動で折り返す */
+  flex-wrap: wrap;
 }
 
-.c-button,
-.r-button {
-  padding: 0.5rem 1.25rem;
+.btn-primary,
+.btn-secondary {
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #68779a;
   border-radius: 0.5rem;
-  box-sizing: border-box;
-  /* 念のため、並び方を揃える */
-  display: inline-block;
-  /* 縦の並び位置を真ん中に揃える */
-  vertical-align: middle;
+  /* 幅を均等にする */
+  flex: 1;
+  /* 広がりすぎ防止 */
+  max-width: 200px;
 }
 
-.c-button {
+@media (max-width: 480px) {
+  .action-buttons {
+    flex-direction: column;
+    /* 縦並びにする */
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    /* 画面幅いっぱいの大きなボタンにする */
+    width: 100%;
+    max-width: none;
+    /* スマホではより押しやすく少し高くする */
+    min-height: 3.5rem;
+  }
+}
+
+.btn-primary {
   background: #cbe8fa;
-  width: 200px;
 }
 
-.r-button {
+.btn-secondary {
   background: #fff;
-  width: 120px;
 }
 
-.c-button:hover {
+.btn-primary:hover {
   background-color: #E6A1C0;
 }
 
-.r-button:hover {
+.btn-secondary:hover {
   background-color: #FFFF00;
 }
 
