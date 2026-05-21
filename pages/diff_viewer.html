@@ -6,25 +6,74 @@ Created: 2026-03-11
 Description: 左右比較ビューア。
 Note: 
 -->
+
 <head>
     <meta charset="UTF-8">
     <title>Diff Viewer (jsDelivr版)</title>
-    
+
+    <!-- Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QRGD4CZBH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-QRGD44CZBH');
+    </script><!-- End Google Tag Manager -->
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html@3.4.48/bundles/css/diff2html.min.css">
-    
+
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 1.25rem; background-color: #f6f8fa; }
-        .input-area { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-        textarea { flex: 1; height: 180px; padding: 1.25rem; border: 1px solid #d0d7de; border-radius: 0.5rem; font-family: monospace; font-size: 0.9rem; }
-        .btn-container { text-align: center; margin-bottom: 1.25rem; }
-        button { 
-            padding: 0.5rem 2rem; cursor: pointer; background: #2ea44f; color: white; 
-            border: none; border-radius: 0.5rem; font-weight: bold; font-size: 1rem;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            padding: 1.25rem;
+            background-color: #f6f8fa;
         }
-        button:hover { background: #2c974b; }
-        #output { background: white; border: 1px solid #d0d7de; border-radius: 0.5rem; }
+
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            flex: 1;
+            height: 180px;
+            padding: 1.25rem;
+            border: 1px solid #d0d7de;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+
+        button {
+            padding: 0.5rem 2rem;
+            cursor: pointer;
+            background: #2ea44f;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #2c974b;
+        }
+
+        #output {
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 0.5rem;
+        }
     </style>
 </head>
+
 <body>
 
     <h2>左右比較ビューアにゃん</h2>
@@ -70,4 +119,5 @@ Note:
         }
     </script>
 </body>
+
 </html>
