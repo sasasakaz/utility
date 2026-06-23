@@ -189,7 +189,6 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     <button class="btn-tag btn-md" onclick="insertTag('ol')" title="番号付きリスト (1.)">1.</button>
     <button class="btn-tag btn-md" onclick="changeIndent('add')" title="インデントを増やす（スペース4個追加）">➡️</button>
     <button class="btn-tag btn-md" onclick="changeIndent('remove')" title="インデントを減らす（スペース4個削除）">⬅️</button>
-    <button class="btn-tag btn-md" onclick="insertTag('strong')" title="強調 (🅱️)">🅱️</button>
     <button class="btn-tag btn-md" onclick="insertTag('link')" title="リンク挿入 (🔗)">🔗</button>
     <button class="btn-tag btn-md" onclick="insertTag('quote')" title="引用 (❝)">❝</button>
     <button class="btn-tag btn-md" onclick="insertTag('table')" title="表の挿入 (tsvなら範囲指定して押下)">📊</button>
@@ -197,6 +196,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     <button class="btn-tag btn-md" onclick="insertTag('code')" title="コードブロック (🧱)">🧱</button>
     <button class="btn-tag btn-md" onclick="insertTag('pre_quote')" title="等幅フォント改行維持引用：コード出力結果の貼付用などに (📋)">📋</button>
     <!-- <span style="margin: 0 2px; border-left: 1px solid #ccc; height: 1.5rem; align-self: center;"></span> -->
+    <button class="btn-tag btn-html" onclick="insertTag('strong')" title="強調 (🅱️)">🅱️</button>
     <button class="btn-tag btn-html" onclick="insertTag('mark')" title="ハイライト (🖍️)">🖍️</button>
     <button class="btn-tag btn-html" onclick="insertTag('info')" title="情報ボックス (✅)">✅</button>
     <button class="btn-tag btn-html" onclick="insertTag('warn')" title="注意ボックス (⚠️)">⚠️</button>
@@ -307,13 +307,13 @@ mark { background-color: #fff176; }
         case 'h2': insertText = '## ' + (selectedText); break;
         case 'ul': insertText = '- ' + (selectedText); break;
         case 'ol': insertText = '1. ' + (selectedText); break;
-        case 'strong': insertText = '**' + (selectedText || '強調') + '**'; break;
         case 'link': insertText = '[' + (selectedText || 'テキスト') + '](https://google.com)'; break;
         case 'quote': insertText = '\n> ' + (selectedText || '引用文') + '\n'; break;
         // case 'table': insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n'; break;
         case 'inline_code': insertText = '`' + (selectedText || 'code') + '`'; break;
         case 'code': insertText = '\n```\n' + (selectedText || '') + '\n```\n'; break;
         case 'pre_quote': insertText = '\n<blockquote><pre>\n' + (selectedText || 'ここにテキストをペースト') + '\n</pre></blockquote>\n'; break;
+        case 'strong': insertText = '<strong>' + (selectedText || '強調') + '</strong>'; break;
         case 'mark': insertText = '<mark>' + (selectedText || 'ハイライト') + '</mark>'; break;
         case 'info': insertText = '<div class="mdc-info-box">\n<strong>✅ 情報</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
         case 'warn': insertText = '<div class="mdc-warn-box">\n<strong>⚠️ 注意</strong>\n<ul>\n  <li>' + (selectedText || 'ないようを入力') + '</li>\n</ul>\n</div>\n'; break;
