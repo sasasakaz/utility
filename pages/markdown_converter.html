@@ -240,7 +240,11 @@ mark { background-color: #fff176; }
 :not(pre) > code { background-color: #f0f0f0; color: #c7254e; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 90%; }
 .mdc-info-box { background-color: #e8f5e9; border-left: 0.25rem solid #4caf50; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
 .mdc-warn-box { background-color: #fff3e0; border-left: 0.25rem solid #ff9800; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
-.mdc-alert-box { background-color: #ffebee; border-left: 0.25rem solid #f44336; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }`;
+.mdc-alert-box { background-color: #ffebee; border-left: 0.25rem solid #f44336; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
+.post-body table { width: 100%; border-collapse: collapse; margin: 20px 0; line-height: 1.6; border: 1px solid #d0e7f5; }
+.post-body th, .post-body td { border: 1px solid #d0e7f5; }
+.post-body th { padding: 12px 8px; font-weight: bold; text-align: left; background-color: #e8f4fc; color: #2b5b84; white-space: nowrap; }
+.post-body td { padding: 16px 8px; text-align: left; vertical-align: top; }`;
 
     const defaultWrapper = `<!DOCTYPE html>
 <html>
@@ -251,8 +255,10 @@ mark { background-color: #fff176; }
     <style>{{css}}</style>
 </head>
 <body>
+  <div class="post-body">
     {{content}}
-    <script>hljs.highlightAll();<\/script>
+  </div>
+  <script>hljs.highlightAll();<\/script>
 </body>
 </html>`;
 
