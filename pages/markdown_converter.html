@@ -237,7 +237,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     const defaultCSS = `body { font-family: sans-serif; line-height: 1.6; padding: 2.5rem; max-width: 768px; margin: auto; background: white; color: #333; }
 blockquote { border-left: 0.25rem solid #ccc; margin: 1.5rem 1.25rem; padding: 0.5rem 1.25rem; color: #666; background-color: #f9f9f9; }
 mark { background-color: #fff176; }
-:not(pre) > code { background-color: #f0f0f0; color: #c7254e; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 90%; }
+.inline-note { background-color: #f0f0f0; color: #c7254e; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 90%; margin: 0 2px; }
 .mdc-info-box { background-color: #e8f5e9; border-left: 0.25rem solid #4caf50; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
 .mdc-warn-box { background-color: #fff3e0; border-left: 0.25rem solid #ff9800; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
 .mdc-alert-box { background-color: #ffebee; border-left: 0.25rem solid #f44336; padding: 1rem; margin: 0.75rem 0; border-radius: 0.5rem; }
@@ -316,7 +316,7 @@ mark { background-color: #fff176; }
         case 'link': insertText = '[' + (selectedText || 'テキスト') + '](https://google.com)'; break;
         case 'quote': insertText = '\n> ' + (selectedText || '引用文') + '\n'; break;
         // case 'table': insertText = '| Header | Header | Header |\n| :--- | :--- | :--- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n'; break;
-        case 'inline_code': insertText = '`' + (selectedText || 'code') + '`'; break;
+        case 'inline_code': insertText = "<span class='inline-note'>" + (selectedText || 'code') + "</span>"; break;
         case 'code': insertText = '\n```\n' + (selectedText || '') + '\n```\n'; break;
         case 'pre_quote': insertText = '\n<blockquote><pre>\n' + (selectedText || 'ここにテキストをペースト') + '\n</pre></blockquote>\n'; break;
         case 'strong': insertText = '<strong>' + (selectedText || '強調') + '</strong>'; break;
