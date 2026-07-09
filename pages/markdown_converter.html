@@ -3,7 +3,7 @@
 <!-- 
 MarkdownをHTMLに変換するツール
 Created: 2026-04-25
-Updated: 2026-05-12
+Updated: 2026-07-08
 Description: MarkdownをHTMLに変換する。HTMLソースをコピぺして使う。
 Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自由に編集可能。hilight.js利用時はペースト先のHTMLにhighlight.jsとCSSの追加が必要。
 -->
@@ -13,6 +13,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Markdown to HTML</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
 
   <!-- Google Tag Manager -->
   <!-- Google tag (gtag.js) -->
@@ -79,6 +80,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
       justify-content: flex-start;
       align-items: center;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     /* 左側の設定エリア */
@@ -106,6 +108,55 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     .settings-area textarea {
       height: 80px;
       background: #fafafa;
+    }
+
+    /* 変換方向のスライドスイッチ */
+    .mode-switch-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-left: auto;
+    }
+
+    .switch-label {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #aaa;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    .switch-label.active {
+      color: #0288d1;
+    }
+
+    .mode-switch-track {
+      position: relative;
+      width: 48px;
+      height: 22px;
+      background: #cfd8dc;
+      border-radius: 11px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      flex-shrink: 0;
+    }
+
+    .mode-switch-track.dragging {
+      cursor: grabbing;
+      background: #b0bec5;
+    }
+
+    .mode-switch-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+      transition: left 0.2s ease;
     }
 
     /* 共通ボタン・タグ */
@@ -182,8 +233,9 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
 
 <body>
 
-  <h2>MarkdownをHTMLに変換するにゃん</h2>
-  <div class="controls">
+  <h2 id="page-title">MarkdownをHTMLに変換するにゃん</h2>
+
+  <div class="controls" id="tag-controls">
     <button class="btn-tag btn-md" onclick="insertTag('h2')" title="見出し H2">#</button>
     <button class="btn-tag btn-md" onclick="insertTag('ul')" title="箇条書きリスト (•)">•</button>
     <button class="btn-tag btn-md" onclick="insertTag('ol')" title="番号付きリスト (1.)">1.</button>
@@ -209,7 +261,7 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     <div class="editor-section">
       <textarea id="markdown-input" placeholder="Input Markdown..."></textarea>
 
-      <div class="settings-wrapper">
+      <div class="settings-wrapper" id="settings-wrapper">
         <div class="settings-area">
           <label>Preview画面に適用するCSS</label>
           <textarea id="css-input"></textarea>
@@ -226,9 +278,17 @@ Notes: プレビュー用のHTMLとCSSは、下部のテキストエリアで自
     <div class="editor-section">
       <div id="html-output" class="output"></div>
       <div class="bottom-controls">
-        <button class="btn-preview" onclick="openPreview()">Preview HTML</button>
-        <button class="btn-copy" onclick="copyToClipboard()">Copy HTML source</button>
+        <button class="btn-preview" id="preview-btn" onclick="openPreview()">Preview HTML</button>
+        <button class="btn-copy" id="copy-btn" onclick="copyToClipboard()">Copy HTML source</button>
         <span id="copy-message" class="copy-msg" style="display: none;">コピーしたにゃん！</span>
+
+        <div class="mode-switch-wrap">
+          <span class="switch-label active" id="switch-label-left">MD→HTML</span>
+          <div class="mode-switch-track" id="mode-switch-track">
+            <div class="mode-switch-knob" id="mode-switch-knob"></div>
+          </div>
+          <span class="switch-label" id="switch-label-right">HTML→MD</span>
+        </div>
       </div>
     </div>
   </div>
@@ -266,16 +326,145 @@ mark { background-color: #fff176; }
     const output = document.getElementById('html-output');
     const cssInput = document.getElementById('css-input');
     const wrapperInput = document.getElementById('wrapper-input');
+    const turndownService = new TurndownService({ headingStyle: 'atx', bulletListMarker: '-' });
+
+    // デフォルトは3スペース固定インデント（オプション化されていないため上書き）。
+    // ハイフンリストは2スペース、番号付きリストは4スペース固定でインデントする。
+    // （番号付きは1〜99番台までなら4スペースで連番崩れは起きない）
+    turndownService.addRule('listItem', {
+      filter: 'li',
+      replacement: function (content, node, options) {
+        let prefix = options.bulletListMarker + ' ';
+        const parent = node.parentNode;
+        let indent = '  '; // ハイフンリストのインデント（2スペース）
+        if (parent.nodeName === 'OL') {
+          const start = parent.getAttribute('start');
+          const index = Array.prototype.indexOf.call(parent.children, node);
+          prefix = (start ? Number(start) + index : index + 1) + '. ';
+          indent = '    '; // 番号付きリストのインデント（4スペース）
+        }
+
+        content = content
+          .replace(/^\n+/, '') // 先頭の改行を除去
+          .replace(/\n+$/, '\n') // 末尾の改行はひとつだけ残す
+          .replace(/\n/gm, '\n' + indent);
+
+        return (
+          prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
+        );
+      }
+    });
 
     // 初期化
     cssInput.value = defaultCSS;
     wrapperInput.value = defaultWrapper;
 
+    // 変換方向（'md2html' or 'html2md'）
+    let currentMode = 'md2html';
+
+    // --- スライドスイッチ関連 ---
+    const switchTrack = document.getElementById('mode-switch-track');
+    const switchKnob = document.getElementById('mode-switch-knob');
+    const labelLeft = document.getElementById('switch-label-left');
+    const labelRight = document.getElementById('switch-label-right');
+
+    const KNOB_LEFT_POS = 2;   // md2html（左）の時のknob位置
+    const KNOB_RIGHT_POS = 28; // html2md（右）の時のknob位置
+    const DRAG_THRESHOLD = 0.7; // 反対側まで70%以上動かしたら切り替え確定
+
+    function setMode(mode) {
+      currentMode = mode;
+      const isMd2Html = mode === 'md2html';
+
+      // knobの位置をスナップ
+      switchKnob.style.transition = 'left 0.2s ease';
+      switchKnob.style.left = (isMd2Html ? KNOB_LEFT_POS : KNOB_RIGHT_POS) + 'px';
+      labelLeft.classList.toggle('active', isMd2Html);
+      labelRight.classList.toggle('active', !isMd2Html);
+
+      // Markdown専用のタグ挿入ボタン・プレビュー設定はMD→HTMLの時だけ表示
+      document.getElementById('tag-controls').style.display = isMd2Html ? 'flex' : 'none';
+      document.getElementById('settings-wrapper').style.display = isMd2Html ? 'flex' : 'none';
+      document.getElementById('preview-btn').style.display = isMd2Html ? 'inline-block' : 'none';
+
+      document.getElementById('page-title').textContent = isMd2Html
+        ? 'MarkdownをHTMLに変換するにゃん'
+        : 'HTMLをMarkdownに変換するにゃん';
+
+      input.placeholder = isMd2Html ? 'Input Markdown...' : 'Input HTML...';
+      document.getElementById('copy-btn').textContent = isMd2Html ? 'Copy HTML source' : 'Copy Markdown source';
+
+      // 入力欄はクリアして混乱を防ぐ
+      input.value = '';
+      updateOutput();
+    }
+
+    // ドラッグでのモード切り替え（クリックだけでは切り替わらない）
+    let isDragging = false;
+    let dragStartX = 0;
+    let knobStartLeft = KNOB_LEFT_POS;
+
+    function getClientX(e) {
+      return e.touches ? e.touches[0].clientX : e.clientX;
+    }
+
+    function dragStart(e) {
+      isDragging = true;
+      dragStartX = getClientX(e);
+      knobStartLeft = currentMode === 'md2html' ? KNOB_LEFT_POS : KNOB_RIGHT_POS;
+      switchKnob.style.transition = 'none';
+      switchTrack.classList.add('dragging');
+    }
+
+    function dragMove(e) {
+      if (!isDragging) return;
+      const deltaX = getClientX(e) - dragStartX;
+      let newLeft = knobStartLeft + deltaX;
+      newLeft = Math.max(KNOB_LEFT_POS, Math.min(KNOB_RIGHT_POS, newLeft));
+      switchKnob.style.left = newLeft + 'px';
+    }
+
+    function dragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      switchTrack.classList.remove('dragging');
+
+      const currentLeft = parseFloat(switchKnob.style.left);
+      const totalDistance = KNOB_RIGHT_POS - KNOB_LEFT_POS;
+
+      let targetMode = currentMode;
+      if (currentMode === 'md2html' && (currentLeft - KNOB_LEFT_POS) / totalDistance > DRAG_THRESHOLD) {
+        targetMode = 'html2md';
+      } else if (currentMode === 'html2md' && (KNOB_RIGHT_POS - currentLeft) / totalDistance > DRAG_THRESHOLD) {
+        targetMode = 'md2html';
+      }
+
+      if (targetMode !== currentMode) {
+        setMode(targetMode);
+      } else {
+        // しきい値未満ならスイッチを元の位置にスナップバック（モードは変わらない＝入力は消えない）
+        switchKnob.style.transition = 'left 0.2s ease';
+        switchKnob.style.left = knobStartLeft + 'px';
+      }
+    }
+
+    switchTrack.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
+    switchTrack.addEventListener('touchstart', dragStart, { passive: true });
+    document.addEventListener('touchmove', dragMove, { passive: true });
+    document.addEventListener('touchend', dragEnd);
+
     // リアルタイム更新
     input.addEventListener('input', updateOutput);
     function updateOutput() {
-      // 右側にはHTMLソースを文字列として表示する
-      output.textContent = marked.parse(input.value);
+      if (currentMode === 'md2html') {
+        // 右側にはHTMLソースを文字列として表示する
+        output.textContent = marked.parse(input.value);
+      } else {
+        // 右側にはMarkdownソースを文字列として表示する
+        output.textContent = turndownService.turndown(input.value);
+      }
     }
 
     // ボタン押下時のタグ挿入関数
